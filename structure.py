@@ -13,15 +13,26 @@ class GameClass:
         
         
     def run(self):
-        while self.running == True: 
+        while self.running: 
             self.p_input()
+            self.update()
             self.render()
-            # self.destroy()
     
     #proccess inputs 
     def p_input(self):
-        pass
-    
+        event = sdl2.SDL_Event
+        poll = sdl2.SDL_PollEvent
+        
+        for event in poll:
+            if sdl2.SDL_EventType == sdl2.SDL_QUIT:
+                self.running = False
+                break
+            
+            elif sdl2.SDL_EventType == sdl2.SDL_KEYDOWN:
+                key = event.key.keysym.sym == sdl2.SDLK_ESCAPE
+                self.running = False
+                break
+        
     #updates window
     def update(self):
         pass
@@ -34,7 +45,8 @@ class GameClass:
         sprite = factory.from_text("Hello world", sdl2.ext.Color(255, 255, 255), sdl2.ttf.TTF_OpenFont("arial.ttf", 24))
         sprite.center = (400, 300)
 
-        renderer.rendertarget(sprite)
+        # Renderer.copy is used to rendedr a texture(sprite) 
+        renderer.copy(sprite)
         renderer.present()
     #destroys window
     def destroy(self):
