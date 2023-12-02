@@ -6,4 +6,4 @@ instance.run()
 instance.p_input()
 instance.update()
 instance.render()
-instance.destroy()
+

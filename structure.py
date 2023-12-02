@@ -1,56 +1,59 @@
-import sys
+import sdl2
 import sdl2.ext 
-import sdl2.sdlttf
-
 class GameClass:
     def __init__(self):
         sdl2.ext.init()
-        sdl2.sdlttf.TTF_Init()
-        self.window = sdl2.ext.Window("Hello world", size=(800,600))
+        
+        #set display for fullScreen
+        display = sdl2.SDL_DisplayMode()
+        sdl2.SDL_GetCurrentDisplayMode(0, display)
+        self.window = sdl2.ext.Window("Hello world", size=(display.w, display.h))
         self.window.show()
-        print("game constructor called")
+        
+        #create global render so loop doesn't breaks
+        self.renderer = sdl2.SDL_CreateRenderer(self.window.window, -1, sdl2.SDL_RENDERER_PRESENTVSYNC | sdl2.SDL_RENDERER_ACCELERATED)
         self.running = True
         
+        #set instance of window to full screen
+        sdl2.SDL_SetWindowFullscreen(self.window.window, sdl2.SDL_WINDOW_FULLSCREEN)
         
     def run(self):
-        while self.running: 
-            self.p_input()
+        while self.running:
+            self.events = sdl2.ext.get_events()
+            for event in self.events:
+                if event.type == sdl2.SDL_QUIT:
+                    self.running = False
+                    break
+            self.p_input()    
             self.update()
             self.render()
-    
+        self.destroy()
+
     #proccess inputs 
     def p_input(self):
-        event = sdl2.SDL_Event
-        poll = sdl2.SDL_PollEvent
-        
-        for event in poll:
-            if sdl2.SDL_EventType == sdl2.SDL_QUIT:
+        for event in self.events:
+            if event.type == sdl2.SDL_QUIT:
                 self.running = False
                 break
-            
-            elif sdl2.SDL_EventType == sdl2.SDL_KEYDOWN:
+
+            elif event.type == sdl2.SDL_KEYDOWN:
                 key = event.key.keysym.sym == sdl2.SDLK_ESCAPE
                 self.running = False
                 break
-        
+            
     #updates window
     def update(self):
         pass
     
     def render(self):
-        renderer = sdl2.ext.Renderer(self.window)
-        renderer.clear()
-        
-        factory = sdl2.ext.SpriteFactory(sdl2.ext.SOFTWARE)
-        sprite = factory.from_text("Hello world", sdl2.ext.Color(255, 255, 255), sdl2.ttf.TTF_OpenFont("arial.ttf", 24))
-        sprite.center = (400, 300)
-
-        # Renderer.copy is used to rendedr a texture(sprite) 
-        renderer.copy(sprite)
-        renderer.present()
+        sdl2.SDL_SetRenderDrawColor(self.renderer, 255, 0, 0, 255)
+        sdl2.SDL_RenderClear(self.renderer)
+        sdl2.SDL_RenderPresent(self.renderer)
+      
     #destroys window
     def destroy(self):
         print("game destructor was called!")
+        sdl2.ext.quit()
     
 game = GameClass()
-game.destroy()
+game.run()
