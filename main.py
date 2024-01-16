@@ -2,10 +2,14 @@ import glm
 import sdl2
 import sdl2.ext 
 import sdl2.sdlimage
-import time
+from ECS.ECS import Entity
+from Modules import logger as mod
+from components.components import TransformComponent
+
 class GameClass:
     def __init__(self):
         sdl2.ext.init()
+        self.logger = mod.Logger()
         
         #set display for fullScreen
         display = sdl2.SDL_DisplayMode()
@@ -13,10 +17,21 @@ class GameClass:
         self.window = sdl2.ext.Window("Hello world", size=(display.w, display.h))
         self.window.show()
         
+        if not self.window:
+            self.logger.err(message="Failed to create window") # type: ignore
+            self.running = False
+            return
+        
         #create global render so loop doesn't breaks
         self.renderer = sdl2.SDL_CreateRenderer(self.window.window, -1, sdl2.SDL_RENDERER_PRESENTVSYNC | sdl2.SDL_RENDERER_ACCELERATED)
+        
+        if not self.renderer:
+            self.logger.err(message="Failed to create renderer") # type: ignore
+            self.running = False
+            return
         self.running = True
         
+        self.logger.log(message="The game constructor was called!")
         #set instance of window to full screen
         sdl2.SDL_SetWindowFullscreen(self.window.window, sdl2.SDL_WINDOW_FULLSCREEN)
         self.fps = 60
@@ -52,6 +67,13 @@ class GameClass:
     def setup(self):
         self.playerpos = glm.vec2(10, 20)
         self.playervel = glm.vec2(50, 5)
+        
+        # tank = registry.CreateEntity(tank)
+        # tank.AddComponent(TransformComponent())
+        # tank.AddComponent(BoxColliderComponent())
+        # tank.AddComponent(SpriteComponent("./assets/images/tank.png"))
+        
+    
     
     #updates window
     def update(self):
@@ -65,7 +87,6 @@ class GameClass:
         
         # deltatime = diff in ticks since last frame conv to seconds
         self.dt = (sdl2.SDL_GetTicks() - self.ms_prev_frame)/1000
-        print(sdl2.SDL_GetTicks(), self.ms_prev_frame, self.dt)
 
         self.playerpos.x += self.playervel.x * self.dt
         self.playerpos.y += self.playervel.y * self.dt
@@ -88,8 +109,9 @@ class GameClass:
         
     #destroys window
     def destroy(self):
-        print("game destructor was called!")
+        self.logger.err(message="game destructor was called!")
         sdl2.ext.quit()
-    
+
+
 game = GameClass()
 game.run()
