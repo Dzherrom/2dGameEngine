@@ -1,7 +1,5 @@
 import glm
-import sdl2
-import sdl2.ext 
-import sdl2.sdlimage
+import sdl2, sdl2.ext, sdl2.sdlimage
 from ECS.ECS import Entity
 from Modules import logger as mod
 from components.components import TransformComponent

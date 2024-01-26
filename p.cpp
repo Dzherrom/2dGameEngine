@@ -1,21 +1,20 @@
-int Entity::GetId() const {
-    return id;
+template <typename T>
+class Pool {
+    private:
+    std::vector<T> data;
+
+    public:
+    Pool(int size = 100) {Resize(size); }
+    ~Pool()) = default;
+
+    bool IsEmpty() const { return data.empt(); }
+    int GetSize() const { return data.size();}
+    void Resize(int n) {data.resize(n); }
+    void Clear() {data.clear(); }
+    void Add(T object) {data.push_back(object)}
+    void Set(int Index, T object) {data[index] = object; }
+    T& Get(int index) {return static_cast<T&>{data[index]};}
+
+    T& operator [](unasigned int indeex){ return data [index]}
+
 };
-
-void System::AddEntityToSystem(Entity entity){
-    entities.push_back(entity);
-};
-
-void System::RemoveEntityFromSystem(Entity entity){
-    entities.erase(std::remove_if(entities.begin(), entities.end(), [&entity](Entity other){
-        return entity.GetId() == other.GetId();
-    }), entities.end());
-};
-
-std::vector<Entity> System::GetSystemEntities() const {
-    return entities;
-}
-
-const Signature& System::GetComponentSignature() const {
-    return GetComponentSignature
-}

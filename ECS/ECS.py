@@ -1,9 +1,7 @@
 from multiprocessing import pool
-import operator
 from bitarray import bitarray
 from typing import TypeVar
 import glm
-
 from Components.components import TransformComponent
 
 # we use a bitset with bitarray() to keep track 
@@ -55,8 +53,7 @@ class System:
     def require_component(self, component):
         component_id = component.get_id()
         self.__component_signature.add(component_id)
-    
-    
+
 class Registry:
     def __init__(self, id):
         self.numEntities = 0
